@@ -1,0 +1,4 @@
+(executable
+ (public_name data-query)
+ (name main)
+ (libraries data_query))
