@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/christopherfujino/finance-platform/go/data"
+	"github.com/christopherfujino/finance-platform/go/server"
 )
 
 func main() {
@@ -14,7 +15,5 @@ func main() {
 	}
 
 	var rows = data.Parse(os.Args[1])
-	for _, row := range rows {
-		fmt.Println(row.Pretty())
-	}
+	server.Serve(rows)
 }

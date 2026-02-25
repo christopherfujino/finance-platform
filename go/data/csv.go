@@ -12,6 +12,7 @@ import (
 
 var expectedHeaders = []string{"Date", "Account", "Payee", "Category", "Exclusion", "Amount"}
 
+// Should this be a more dynamic format, to faciliate scripting?
 type Transaction struct {
 	Date    time.Time
 	Account string

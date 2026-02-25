@@ -1,0 +1,71 @@
+<html>
+  <head>
+    <script>
+      function _searchHandler() {
+        console.log("Func-ing!");
+
+        // Declare variables
+        const input = document.getElementById('searchBar');
+        const filter = input.value.toUpperCase();
+        const transactionContainer = document.getElementById('transaction-container');
+        const rows = Array.from(transactionContainer.querySelectorAll('.transaction-row'));
+
+        // Loop through all list items, and hide those who don't match the search query
+        for (let i = 0; i < rows.length; i++) {
+          const fields = Array.from(rows[i].getElementsByTagName("div"));
+          const textValues = fields.reduce(function(acc, cur) {
+            acc.push(cur.textContent || cur.innerText);
+            return acc;
+          }, []);
+
+          const visible = textValues.reduce(
+            (acc, cur) => acc || (cur.toUpperCase().indexOf(filter) > -1),
+            false,
+          );
+          if (visible) {
+            rows[i].style.display = "";
+          } else {
+            rows[i].style.display = "none";
+          }
+        }
+      }
+
+      function searchHandler() {
+        try {
+          _searchHandler();
+        } catch (err) {
+          const errorPane = document.getElementById("errorPane");
+          errorPane.style.display = "block";
+          errorPane.innerHTML = err.toString();
+          console.error(err);
+        }
+      }
+    </script>
+    <style>
+      #errorPane {
+        background-color: #ffa0a0;
+        padding: 1em; display: none;
+      }
+
+      #searchBar {
+        padding: 12px 20px 12px 40px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="errorPane"></div>
+    <input type="text" id="searchBar" onkeyup="searchHandler()" placeholder="Search...">
+
+    <div class="container" id="transaction-container">
+      {{range .}}
+      <div class="transaction-row">
+        <div style="display: inline-block">{{.Date}}</div>
+        <div style="display: inline-block">{{.Account}}</div>
+        <div style="display: inline-block">{{.Payee}}</div>
+        <div style="display: inline-block">{{.Amount}}</div>
+      </div>
+      {{end}}
+    </div>
+
+  </body>
+</html>
