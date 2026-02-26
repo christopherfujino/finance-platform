@@ -4,15 +4,13 @@
       function _searchHandler() {
         console.log("Func-ing!");
 
-        // Declare variables
         const input = document.getElementById('searchBar');
         const filter = input.value.toUpperCase();
         const transactionContainer = document.getElementById('transaction-container');
         const rows = Array.from(transactionContainer.querySelectorAll('.transaction-row'));
 
-        // Loop through all list items, and hide those who don't match the search query
-        for (let i = 0; i < rows.length; i++) {
-          const fields = Array.from(rows[i].getElementsByTagName("div"));
+        for (row of rows) {
+          const fields = Array.from(row.getElementsByTagName("td"));
           const textValues = fields.reduce(function(acc, cur) {
             acc.push(cur.textContent || cur.innerText);
             return acc;
@@ -23,9 +21,9 @@
             false,
           );
           if (visible) {
-            rows[i].style.display = "";
+            row.style.display = "";
           } else {
-            rows[i].style.display = "none";
+            row.style.display = "none";
           }
         }
       }
@@ -42,6 +40,10 @@
       }
     </script>
     <style>
+      table {
+        border-spacing: 3px;
+      }
+
       #errorPane {
         background-color: #ffa0a0;
         padding: 1em; display: none;
@@ -56,16 +58,16 @@
     <div id="errorPane"></div>
     <input type="text" id="searchBar" onkeyup="searchHandler()" placeholder="Search...">
 
-    <div class="container" id="transaction-container">
+    <table class="container" id="transaction-container">
       {{range .}}
-      <div class="transaction-row">
-        <div style="display: inline-block">{{.Date}}</div>
-        <div style="display: inline-block">{{.Account}}</div>
-        <div style="display: inline-block">{{.Payee}}</div>
-        <div style="display: inline-block">{{.Amount}}</div>
-      </div>
+      <tr class="transaction-row">
+        <td>{{ "2006-01-02" | .Date.Format }}</td>
+        <td>{{.Account}}</td>
+        <td>{{.Payee}}</td>
+        <td>{{.Amount}}</td>
+      </tr>
       {{end}}
-    </div>
+    </table>
 
   </body>
 </html>
