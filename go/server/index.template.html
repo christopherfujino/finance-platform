@@ -101,35 +101,37 @@
     </script>
   </head>
   <body>
-    <div id="errorPane"></div>
-    <input type="text" id="searchBar" onkeyup="searchHandler()" placeholder="Search...">
+    <div class="container-fluid">
+      <div id="errorPane"></div>
+      <input type="text" id="searchBar" onkeyup="searchHandler()" placeholder="Search...">
 
-    <table id="transaction-container">
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Account</th>
-          <th>Payee</th>
-          <th>Amount</th>
-          <th>Category</th>
-        </tr>
-      </thead>
-      <tbody>
-        {{range .}}
-        <tr class="transaction-row">
-          <td><a href="/?date={{"2006-01-02" | .Date.Format}}">{{ "2006-01-02" | .Date.Format }}</a></td>
-          <td><a href="/?account={{.Account}}">{{.Account}}</a></td>
-          <td><a href="/?payee={{.Payee}}">{{.Payee}}</a></td>
-          <td>{{.Amount}}</td>
-          <td><select class="select" required>
-            <option selected disabled value="">Category</option>
-            <option>Foo</option>
-            <option>Bar</option>
-          </select></td>
-        </tr>
-        {{end}}
-      </tbody>
-    </table>
-
+      <table id="transaction-container">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Account</th>
+            <th>Payee</th>
+            <th>Amount</th>
+            <th>Category</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{ range .Transactions }}
+          <tr class="transaction-row">
+            <td><a href="/?date={{"2006-01-02" | .Date.Format}}">{{ "2006-01-02" | .Date.Format }}</a></td>
+            <td><a href="/?account={{.Account}}">{{.Account}}</a></td>
+            <td><a href="/?payee={{.Payee}}">{{.Payee}}</a></td>
+            <td>{{.Amount}}</td>
+            <td><select class="select" required>
+              <option selected disabled value="">Category</option>
+              {{ range $.Categories }}
+                <option>{{ . }}</option>
+              {{ end }}
+            </select></td>
+          </tr>
+          {{end}}
+        </tbody>
+      </table>
+    </div>
   </body>
 </html>

@@ -9,6 +9,11 @@ import (
 	"github.com/christopherfujino/finance-platform/go/data"
 )
 
+type TemplateWrapper struct {
+	Transactions []data.Transaction
+	Categories []string
+}
+
 func Serve(transactions []data.Transaction) {
 	http.HandleFunc("/", func(writer http.ResponseWriter, req *http.Request) {
 		// TODO: cache this in prod
@@ -20,7 +25,10 @@ func Serve(transactions []data.Transaction) {
 		if err != nil {
 			panic(err)
 		}
-		err = tmpl.Execute(writer, transactions)
+		err = tmpl.Execute(writer, TemplateWrapper{
+			Transactions: transactions,
+			Categories: []string{"Eating out", "Groceries"},
+		})
 		if err != nil {
 			panic(err)
 		}
