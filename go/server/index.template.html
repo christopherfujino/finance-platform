@@ -23,13 +23,13 @@
         }
       });
 
-      function elementMatchesPattern(element, pattern) {
-        return (element.textContent || element.innerText).trim() == pattern;
-      }
-
       function _applySearch() {
-        const transactionContainer = document.getElementById('transaction-container');
-        const rows = Array.from(transactionContainer.querySelectorAll('.transaction-row'));
+        function elementMatchesPattern(element, pattern) {
+          return (element.textContent || element.innerText).trim() == pattern;
+        }
+
+        const transactionContainer = document.getElementById("transaction-container");
+        const rows = Array.from(transactionContainer.querySelectorAll(".transaction-row"));
 
         for (row of rows) {
           const fields = Array.from(row.getElementsByTagName("td"));
@@ -59,7 +59,7 @@
               }, []);
 
               visible = textValues.reduce(
-                (acc, cur) => acc || (cur.toUpperCase().indexOf(filter) > -1),
+                (acc, cur) => acc || (cur.toUpperCase().indexOf(searchTuple[1]) > -1),
                 false,
               );
 
@@ -102,36 +102,60 @@
   </head>
   <body>
     <div class="container-fluid">
-      <div id="errorPane"></div>
-      <input type="text" id="searchBar" onkeyup="searchHandler()" placeholder="Search...">
+      <header>
+        <nav>
+          <ul>
+            <li><hgroup><strong>&#x2B24; Pea Finance</strong><p>Personal finance for peas</p></hgroup><li>
+          </ul>
+          <ul>
+            <li><a href="/#" class="button">Clear Search</a></li>
+            <li><button>Save</button></li>
+          </ul>
+        </nav>
+      </header>
+      <main>
+        <article id="errorPane" style="display: none;"></article>
+        <form role="search">
+          <fieldset role="group">
+            <input type="text" id="searchBar" onkeyup="searchHandler()" placeholder="Search...">
+            <label><input type="checkbox" role="switch" />Foo</label>
+          </fieldset>
+        </form>
 
-      <table id="transaction-container">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Account</th>
-            <th>Payee</th>
-            <th>Amount</th>
-            <th>Category</th>
-          </tr>
-        </thead>
-        <tbody>
-          {{ range .Transactions }}
-          <tr class="transaction-row">
-            <td><a href="/?date={{"2006-01-02" | .Date.Format}}">{{ "2006-01-02" | .Date.Format }}</a></td>
-            <td><a href="/?account={{.Account}}">{{.Account}}</a></td>
-            <td><a href="/?payee={{.Payee}}">{{.Payee}}</a></td>
-            <td>{{.Amount}}</td>
-            <td><select class="select" required>
-              <option selected disabled value="">Category</option>
-              {{ range $.Categories }}
-                <option>{{ . }}</option>
-              {{ end }}
-            </select></td>
-          </tr>
-          {{end}}
-        </tbody>
-      </table>
+        <table id="transaction-container" class="striped">
+          <thead>
+            <tr>
+              <th style="min-width: 9em;">Date</th>
+              <th>Account</th>
+              <th>Payee</th>
+              <th>Amount</th>
+              <th style="min-width: 10em;">Category</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{ range .Transactions }}
+            <tr class="transaction-row">
+              <td><a href="/?date={{"2006-01-02" | .Date.Format}}">{{ "2006-01-02" | .Date.Format }}</a></td>
+              <td><a href="/?account={{.Account}}">{{.Account}}</a></td>
+              <td><a href="/?payee={{.Payee}}">{{.Payee}}</a></td>
+              <td>{{.Amount}}</td>
+              <td><select class="select" required>
+                {{ with $categoryString := .Category.ToString }}
+                  <!-- <option selected disabled value="">Category</option> -->
+                  {{ range $.Categories }}
+                    {{ if (eq $categoryString .) }}
+                      <option selected>{{ . }}</option>
+                    {{ else }}
+                    <option>{{ . }}</option>
+                    {{ end }}
+                  {{ end }}
+                {{ end }}
+              </select></td>
+            </tr>
+            {{ end }}
+          </tbody>
+        </table>
+      </main>
     </div>
   </body>
 </html>

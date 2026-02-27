@@ -1,8 +1,8 @@
 package server
 
 import (
-	"log"
 	"html/template"
+	"log"
 	"net/http"
 	"os"
 
@@ -27,13 +27,12 @@ func Serve(transactions []data.Transaction) {
 		}
 		err = tmpl.Execute(writer, TemplateWrapper{
 			Transactions: transactions,
-			Categories: []string{"Eating out", "Groceries"},
+			Categories: []string{"Uncategorized", "Eating out", "Groceries"},
 		})
 		if err != nil {
 			panic(err)
 		}
 		writer.Header().Set("Content-Type", "text/html; charset=utf-8")
-		// TODO figure out how to inject a stylesheet
 		log.Printf("Received a request %s from %s\n", req.URL.String(), req.RemoteAddr)
 	})
 	log.Println("Listening on 127.0.0.1:8080")
