@@ -1,0 +1,46 @@
+#!/usr/bin/env sloth
+
+let imageTag = 'finance-platform'
+let containerName = 'finance-platform'
+
+if $argv.length == 0 {
+  $stderr.write("Usage: run.sloth [build | run]\n")
+  exit(42);
+}
+
+func build() {
+  [
+    'docker',
+    'build',
+    '.',
+    '--tag', imageTag,
+  ]!
+}
+
+func run() {
+  [
+    'docker',
+    'container',
+    'run',
+    '-it', # interactive, tty
+    '--rm', # auto-remove when exiting
+    '--name', containerName,
+    '--mount', 'type=bind,src=.,dst=/repo',
+    # host:container
+    '--publish', '8080:8080',
+    imageTag,
+    #'/bin/bash',
+  ]!
+}
+
+with($cwd = $scriptDir) {
+  if $argv[0] == 'build' {
+    build()
+  } else if $argv[0] == 'run' {
+    run()
+  } else if $argv[0] == 'attach' {
+    attach()
+  } else {
+    throw "Unknown sub-command \"${$argv[0]}\""
+  }
+}

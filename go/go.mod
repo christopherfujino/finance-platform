@@ -1,3 +1,3 @@
 module github.com/christopherfujino/finance-platform/go
 
-go 1.25.6
+go 1.24.4

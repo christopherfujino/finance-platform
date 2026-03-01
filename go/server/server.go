@@ -35,8 +35,8 @@ func Serve(transactions []data.Transaction) {
 		writer.Header().Set("Content-Type", "text/html; charset=utf-8")
 		log.Printf("Received a request %s from %s\n", req.URL.String(), req.RemoteAddr)
 	})
-	log.Println("Listening on 127.0.0.1:8080")
-	err := http.ListenAndServe("127.0.0.1:8080", nil)
+	log.Println("Listening on 0.0.0.0:8080")
+	err := http.ListenAndServe("0.0.0.0:8080", nil)
 	if err != nil {
 		panic(err)
 	}
