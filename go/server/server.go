@@ -6,7 +6,9 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/christopherfujino/chrislib-go/check"
 	"github.com/christopherfujino/finance-platform/go/data"
+	"github.com/christopherfujino/finance-platform/go/sqlite"
 )
 
 type TemplateWrapper struct {
@@ -14,9 +16,9 @@ type TemplateWrapper struct {
 	Categories []string
 }
 
-func Serve(transactions []data.Transaction) {
+func Serve(db *sqlite.T) {
 	http.HandleFunc("/", func(writer http.ResponseWriter, req *http.Request) {
-		// TODO: cache this in prod
+		var transactions = check.Two(db.GetTransactions())
 		templateBytes, err := os.ReadFile("./server/index.template.html")
 		if err != nil {
 			panic(err)

@@ -16,6 +16,5 @@ func main() {
 	}
 
 	var db = check.Two(sqlite.Init(os.Args[1]))
-	var transactions = check.Two(db.GetTransactions())
-	server.Serve(transactions)
+	server.Serve(db)
 }
