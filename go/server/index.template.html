@@ -132,27 +132,30 @@
               <th style="min-width: 10em;">Category</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody onchange="console.log('changed> ' + this)">
             {{ range .Transactions }}
+            {{ with $transaction := . }}
             <tr class="transaction-row">
               <td>{{ .Id }}</td>
               <td><a href="/?date={{"2006-01-02" | .Date.Format}}">{{ "2006-01-02" | .Date.Format }}</a></td>
               <td><a href="/?account={{.Account}}">{{.Account}}</a></td>
               <td><a href="/?payee={{.Payee}}">{{.Payee}}</a></td>
               <td>{{.Amount}}</td>
+              {{ with $categoryString := .Category.ToString }}
+              {{ with $id := $transaction.Id }}
               <td><select class="select" required>
-                {{ with $categoryString := .Category.ToString }}
-                  <!-- <option selected disabled value="">Category</option> -->
                   {{ range $.Categories }}
                     {{ if (eq $categoryString .) }}
                       <option selected>{{ . }}</option>
                     {{ else }}
-                    <option>{{ . }}</option>
+                      <option>{{ . }}</option>
                     {{ end }}
                   {{ end }}
-                {{ end }}
               </select></td>
+              {{ end }}
+              {{ end }}
             </tr>
+            {{ end }}
             {{ end }}
           </tbody>
         </table>
