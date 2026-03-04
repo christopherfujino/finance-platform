@@ -9,6 +9,7 @@ import (
 
 // Should this be a more dynamic format, to faciliate scripting?
 type Transaction struct {
+	Id       int
 	Date     time.Time
 	Account  string
 	Payee    string

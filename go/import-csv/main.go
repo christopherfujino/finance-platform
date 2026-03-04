@@ -4,31 +4,13 @@ import (
 	"database/sql"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/christopherfujino/chrislib-go/check"
+	"github.com/christopherfujino/finance-platform/go/sqlite"
 	"github.com/christopherfujino/finance-platform/go/data"
 	_ "modernc.org/sqlite"
 )
-
-type DB struct {
-	db *sql.DB
-}
-
-func (d DB) init(path string) *DB {
-	d.db = check.Two(sql.Open("sqlite", path))
-
-	check.Two(d.db.Query(`CREATE TABLE IF NOT EXISTS transactions (
-   id INTEGER PRIMARY KEY,
-   name TEXT NOT NULL
-);`))
-
-	return &d
-}
-
-func (d *DB) insertTransaction(t data.Transaction) {
-	var query = fmt.Sprintf("INSERT INTO transactions (name) VALUES ('%s');", t.Account)
-	d.db.Query(query)
-}
 
 func main() {
 	args := os.Args
@@ -38,18 +20,20 @@ func main() {
 	}
 	fmt.Printf("%v\n", os.Args)
 
-	var db = DB{}.init("db.sqlite")
+	db := check.Two(sqlite.Init("db.sqlite"))
 
 	var transactions = data.Parse(args[1])
 
 	for _, transaction := range transactions {
 		// Insert
-		db.insertTransaction(transaction)
+		check.One(db.InsertTransaction(transaction))
 	}
-	var rows *sql.Rows = check.Two(db.db.Query("SELECT * FROM transactions;"))
-	var s1, s2 string
+	var rows *sql.Rows = check.Two(db.Query("SELECT * FROM transactions;"))
+	var dateInt int64
 	for rows.Next() {
-		check.One(rows.Scan(&s1, &s2))
-		fmt.Printf("%v %v\n", s1, s2)
+		var t data.Transaction
+		check.One(rows.Scan(&t.Id, &dateInt, &t.Account, &t.Payee, &t.Amount, &t.Category))
+		t.Date = time.Unix(dateInt, 0)
+		fmt.Printf("%s\n", t.Pretty())
 	}
 }

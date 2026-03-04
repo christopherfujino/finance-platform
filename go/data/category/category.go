@@ -20,3 +20,7 @@ func (c T) ToString() string {
 	}
 	panic(fmt.Sprintf("Unreachable: %d", c))
 }
+
+func (c T) ToInt() int {
+	return int(c)
+}
