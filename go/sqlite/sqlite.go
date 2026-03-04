@@ -4,8 +4,10 @@ import (
 	"database/sql"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/christopherfujino/finance-platform/go/data"
+	_ "modernc.org/sqlite"
 )
 
 type T struct {
@@ -58,6 +60,22 @@ func (d *T) InsertTransaction(transaction data.Transaction) error {
 	return err
 }
 
-func (d *T) Query(query string) (*sql.Rows, error) {
-	return d.db.Query(query)
+func (d *T) GetTransactions() ([]data.Transaction, error) {
+	var out []data.Transaction
+	rows, err := (d.db.Query("SELECT * FROM transactions;"))
+	if err != nil {
+		return nil, err
+	}
+	var dateInt int64
+	for rows.Next() {
+		var t data.Transaction
+		err = rows.Scan(&t.Id, &dateInt, &t.Account, &t.Payee, &t.Amount, &t.Category)
+		if err != nil {
+			return nil, err
+		}
+		t.Date = time.Unix(dateInt, 0)
+		out = append(out, t)
+	}
+
+	return out, nil
 }

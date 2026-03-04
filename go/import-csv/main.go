@@ -1,10 +1,8 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	"os"
-	"time"
 
 	"github.com/christopherfujino/chrislib-go/check"
 	"github.com/christopherfujino/finance-platform/go/sqlite"
@@ -28,12 +26,9 @@ func main() {
 		// Insert
 		check.One(db.InsertTransaction(transaction))
 	}
-	var rows *sql.Rows = check.Two(db.Query("SELECT * FROM transactions;"))
-	var dateInt int64
-	for rows.Next() {
-		var t data.Transaction
-		check.One(rows.Scan(&t.Id, &dateInt, &t.Account, &t.Payee, &t.Amount, &t.Category))
-		t.Date = time.Unix(dateInt, 0)
-		fmt.Printf("%s\n", t.Pretty())
+
+	transactions = check.Two(db.GetTransactions())
+	for _, transaction := range transactions {
+		fmt.Printf("%s\n", transaction.Pretty())
 	}
 }

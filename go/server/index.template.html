@@ -118,13 +118,13 @@
         <form role="search">
           <fieldset role="group">
             <input type="text" id="searchBar" onkeyup="searchHandler()" placeholder="Search...">
-            <label><input type="checkbox" role="switch" />Foo</label>
           </fieldset>
         </form>
 
         <table id="transaction-container" class="striped">
           <thead>
             <tr>
+              <th>ID</th>
               <th style="min-width: 9em;">Date</th>
               <th>Account</th>
               <th>Payee</th>
@@ -135,6 +135,7 @@
           <tbody>
             {{ range .Transactions }}
             <tr class="transaction-row">
+              <td>{{ .Id }}</td>
               <td><a href="/?date={{"2006-01-02" | .Date.Format}}">{{ "2006-01-02" | .Date.Format }}</a></td>
               <td><a href="/?account={{.Account}}">{{.Account}}</a></td>
               <td><a href="/?payee={{.Payee}}">{{.Payee}}</a></td>
