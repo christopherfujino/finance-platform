@@ -11,9 +11,8 @@ RUN apt-get update \
 
 WORKDIR "/repo/go"
 
-ENV GOCACHE="/repo/container-cache"
+ENV GOCACHE="/repo/ignore/container-cache"
 
 EXPOSE 8080
 
-#ENTRYPOINT ["go", "run", ".", "/repo/fake.csv"]
 ENTRYPOINT ["/repo/entrypoint.sh"]

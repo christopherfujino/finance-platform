@@ -29,7 +29,6 @@ func run() {
     # host:container
     '--publish', '8080:8080',
     imageTag,
-    #'/bin/bash',
   ]!
 }
 
